@@ -42,6 +42,8 @@ var ViewPager = React.createClass({
     autoPlay: PropTypes.bool,
     animation: PropTypes.func,
     initialPage: PropTypes.number,
+    activeDotStyle: PropTypes.object,
+    incativeDotStyle: PropTypes.object
   },
 
   fling: false,
@@ -50,7 +52,7 @@ var ViewPager = React.createClass({
     return {
       isLoop: false,
       locked: false,
-      animation: function(animate, toValue, gs) {
+      animation: function (animate, toValue, gs) {
         return Animated.spring(animate,
           {
             toValue: toValue,
@@ -74,8 +76,8 @@ var ViewPager = React.createClass({
 
     var release = (e, gestureState) => {
       var relativeGestureDistance = gestureState.dx / deviceWidth,
-          //lastPageIndex = this.props.children.length - 1,
-          vx = gestureState.vx;
+        //lastPageIndex = this.props.children.length - 1,
+        vx = gestureState.vx;
 
       var step = 0;
       if (relativeGestureDistance < -0.5 || (relativeGestureDistance < 0 && vx <= -1e-6)) {
@@ -95,7 +97,7 @@ var ViewPager = React.createClass({
         if (Math.abs(gestureState.dx) > Math.abs(gestureState.dy)) {
           if (/* (gestureState.moveX <= this.props.edgeHitWidth ||
               gestureState.moveX >= deviceWidth - this.props.edgeHitWidth) && */
-                this.props.locked !== true && !this.fling) {
+            this.props.locked !== true && !this.fling) {
             this.props.hasTouch && this.props.hasTouch(true);
             return true;
           }
@@ -118,7 +120,7 @@ var ViewPager = React.createClass({
       this.childIndex = 1;
       this.state.scrollValue.setValue(1);
     }
-    if(this.props.initialPage){
+    if (this.props.initialPage) {
       var initialPage = Number(this.props.initialPage);
       if (initialPage > 0) {
         this.goToPage(initialPage, false);
@@ -162,7 +164,7 @@ var ViewPager = React.createClass({
   _startAutoPlay() {
     if (!this._autoPlayer) {
       this._autoPlayer = this.setInterval(
-        () => {this.movePage(1);},
+        () => { this.movePage(1); },
         5000
       );
     }
@@ -229,13 +231,13 @@ var ViewPager = React.createClass({
     } else {
       return (
         <View style={styles.indicators}>
-          <DefaultViewPageIndicator {...props} />
+          <DefaultViewPageIndicator {...props} activeDotStyle={this.props.activeDotStyle} incativeDotStyle={this.props.incativeDotStyle} />
         </View>
       );
     }
   },
 
-  _getPage(pageIdx: number, loop:boolean = false ) {
+  _getPage(pageIdx: number, loop: boolean = false) {
     var dataSource = this.props.dataSource;
     var pageID = dataSource.pageIdentities[pageIdx];
     return (
@@ -262,7 +264,7 @@ var ViewPager = React.createClass({
     var hasLeft = false;
     var viewWidth = this.state.viewWidth;
 
-    if(pageIDs.length > 0 && viewWidth > 0) {
+    if (pageIDs.length > 0 && viewWidth > 0) {
       // left page
       if (this.state.currentPage > 0) {
         bodyComponents.push(this._getPage(this.state.currentPage - 1));
@@ -301,31 +303,32 @@ var ViewPager = React.createClass({
     });
 
     return (
-      <View style={{flex: 1}}
+      <View style={{ flex: 1 }}
         onLayout={(event) => {
-            // console.log('ViewPager.onLayout()');
-            var viewWidth = event.nativeEvent.layout.width;
-            if (!viewWidth || this.state.viewWidth === viewWidth) {
-              return;
-            }
-            this.setState({
-              currentPage: this.state.currentPage,
-              viewWidth: viewWidth,
-            });
-          }}
-        >
+          // console.log('ViewPager.onLayout()');
+          var viewWidth = event.nativeEvent.layout.width;
+          if (!viewWidth || this.state.viewWidth === viewWidth) {
+            return;
+          }
+          this.setState({
+            currentPage: this.state.currentPage,
+            viewWidth: viewWidth,
+          });
+        }}
+      >
 
-        <Animated.View style={[sceneContainerStyle, {transform: [{translateX}]}]}
+        <Animated.View style={[sceneContainerStyle, { transform: [{ translateX }] }]}
           {...this._panResponder.panHandlers}>
           {bodyComponents}
         </Animated.View>
 
-        {this.renderPageIndicator({goToPage: this.goToPage,
-                            pageCount: pageIDs.length,
-                            activePage: this.state.currentPage,
-                            scrollValue: this.state.scrollValue,
-                            scrollOffset: this.childIndex,
-                          })}
+        {this.renderPageIndicator({
+          goToPage: this.goToPage,
+          pageCount: pageIDs.length,
+          activePage: this.state.currentPage,
+          scrollValue: this.state.scrollValue,
+          scrollOffset: this.childIndex,
+        })}
       </View>
     );
   }

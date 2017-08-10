@@ -63,7 +63,7 @@ var DefaultViewPageIndicator = React.createClass({
     //var isTabActive = this.props.activePage === page;
     return (
       <TouchableOpacity style={styles.tab} key={'idc_' + page} onPress={() => this.props.goToPage(page)}>
-        <View style={styles.dot} />
+        <View style={[styles.dot, this.props.incativeDotStyle]} />
       </TouchableOpacity>
     );
   },
@@ -87,16 +87,16 @@ var DefaultViewPageIndicator = React.createClass({
     return (
       <View style={styles.tabs}
         onLayout={(event) => {
-            var viewWidth = event.nativeEvent.layout.width;
-            if (!viewWidth || this.state.viewWidth === viewWidth) {
-              return;
-            }
-            this.setState({
-              viewWidth: viewWidth,
-            });
-          }}>
+          var viewWidth = event.nativeEvent.layout.width;
+          if (!viewWidth || this.state.viewWidth === viewWidth) {
+            return;
+          }
+          this.setState({
+            viewWidth: viewWidth,
+          });
+        }}>
         {indicators}
-        <Animated.View style={[styles.curDot, {left}]} />
+        <Animated.View style={[styles.curDot, this.props.activeDotStyle, { left }]} />
       </View>
     );
   },
