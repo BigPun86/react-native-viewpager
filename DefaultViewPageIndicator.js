@@ -42,7 +42,7 @@ var styles = StyleSheet.create({
     borderRadius: DOT_SIZE / 2,
     backgroundColor: '#80ACD0',
     margin: DOT_SAPCE,
-    bottom: 0,
+    bottom: -4,
   },
 });
 
@@ -54,9 +54,7 @@ var DefaultViewPageIndicator = React.createClass({
   },
 
   getInitialState() {
-    return {
-      viewWidth: 0,
-    };
+    return { viewWidth: 0 };
   },
 
   renderIndicator(page) {
@@ -91,9 +89,7 @@ var DefaultViewPageIndicator = React.createClass({
           if (!viewWidth || this.state.viewWidth === viewWidth) {
             return;
           }
-          this.setState({
-            viewWidth: viewWidth,
-          });
+          this.setState({ viewWidth: viewWidth });
         }}>
         {indicators}
         <Animated.View style={[styles.curDot, this.props.activeDotStyle, { left }]} />
